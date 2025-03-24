@@ -291,6 +291,86 @@
                 transform: translateY(110vh) rotate(360deg);
             }
         }
+
+        .volume-controller {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 5;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .volume-button {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .volume-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .volume-button.muted {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        .volume-slider-container {
+            position: relative;
+            width: 0;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .volume-controller:hover .volume-slider-container {
+            width: 120px;
+            opacity: 1;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            border-radius: 3px;
+            transition: background 0.3s ease;
+        }
+
+        .volume-slider:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
     </style>
 </head>
 <body oncontextmenu="return false;" onkeydown="return disableDevTools(event);">
@@ -299,6 +379,15 @@
     <audio id="background-music" loop>
         <source src="assets/Song.mp3" type="audio/mp3">
     </audio>
+
+    <div class="volume-controller" id="volume-controller">
+        <div class="volume-button" id="volume-button">
+            <span id="volume-icon">🔊</span>
+        </div>
+        <div class="volume-slider-container">
+            <input type="range" min="0" max="100" value="50" class="volume-slider" id="volume-slider">
+        </div>
+    </div>
 
     <div class="overlay" id="overlay">
         <span>[Hey! Click To Enter]</span>
@@ -385,10 +474,53 @@
 
         setInterval(createSnowflake, 300);
 
+        const audio = document.getElementById('background-music');
+        const volumeController = document.getElementById('volume-controller');
+        const volumeButton = document.getElementById('volume-button');
+        const volumeIcon = document.getElementById('volume-icon');
+        const volumeSlider = document.getElementById('volume-slider');
+        let isMuted = false;
+        let previousVolume = 50;
+
+        audio.volume = 0.5;
+        volumeSlider.value = 50;
+
         document.querySelector('#overlay').addEventListener('click', function() {
             this.classList.add('hidden');
             document.querySelector('#content').style.display = 'block';
-            document.querySelector('#background-music').play();
+            volumeController.style.display = 'flex';
+            audio.play();
+        });
+
+        volumeButton.addEventListener('click', function() {
+            isMuted = !isMuted;
+            if (isMuted) {
+                previousVolume = volumeSlider.value;
+                audio.volume = 0;
+                volumeIcon.textContent = '🔇';
+                volumeButton.classList.add('muted');
+                volumeSlider.value = 0;
+            } else {
+                audio.volume = previousVolume / 100;
+                volumeIcon.textContent = '🔊';
+                volumeButton.classList.remove('muted');
+                volumeSlider.value = previousVolume;
+            }
+        });
+
+        volumeSlider.addEventListener('input', function() {
+            const volume = this.value / 100;
+            audio.volume = volume;
+            previousVolume = this.value;
+            if (volume > 0) {
+                isMuted = false;
+                volumeIcon.textContent = '🔊';
+                volumeButton.classList.remove('muted');
+            } else {
+                isMuted = true;
+                volumeIcon.textContent = '🔇';
+                volumeButton.classList.add('muted');
+            }
         });
 
         const phrases = ["scamingdev"];
