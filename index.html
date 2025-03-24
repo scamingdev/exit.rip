@@ -10,6 +10,8 @@
             padding: 0;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
+            cursor: url('assets/Cursor.cur'), none;
+            user-select: none;
         }
 
         body {
@@ -21,7 +23,6 @@
             overflow: hidden;
             position: relative;
             background-color: #000;
-            cursor: url('assets/Cursor.cur'), auto;
         }
 
         .background-image {
@@ -101,17 +102,7 @@
             border-radius: 50%;
             overflow: hidden;
             margin: 0 auto;
-            animation: spinAvatar 10s linear infinite;
             border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        @keyframes spinAvatar {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
         }
 
         .avatar {
@@ -222,7 +213,6 @@
             background-color: transparent;
             position: relative;
             transition: transform 0.3s ease;
-            cursor: pointer;
         }
 
         .social-icons .icon img {
@@ -290,7 +280,7 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;" onkeydown="return disableDevTools(event);">
     <img src="assets/Background.png" alt="Background" class="background-image">
 
     <audio id="background-music" loop>
@@ -329,7 +319,7 @@
                 <div class="icon">
                     <img src="assets/Angle_Wing_Right.png" alt="">
                 </div>
-                <div class="icon" onclick="window.open('https://steamcommunity.com/id/scamex1t/');">
+                <div class="icon" onclick="window.open('https://steamcommunity.com/id/scamingdev/');">
                     <img src="assets/Steam.gif" alt="">
                     <div class="social-name">Steam</div>
                 </div>
@@ -341,13 +331,37 @@
     </div>
 
     <script>
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        function disableDevTools(event) {
+            if (
+                event.keyCode === 123 ||
+                (event.ctrlKey && event.shiftKey && event.keyCode === 73) ||
+                (event.ctrlKey && event.shiftKey && event.keyCode === 74) ||
+                (event.ctrlKey && event.keyCode === 85)
+            ) {
+                event.preventDefault();
+                return false;
+            }
+        }
+
+        document.addEventListener('keydown', disableDevTools);
+
         function createSnowflake() {
             const snowflake = document.createElement('div');
             snowflake.classList.add('snowflake');
             snowflake.innerHTML = '❄';
             snowflake.style.left = `${Math.random() * 100}vw`;
             snowflake.style.animationDuration = `${Math.random() * 5 + 5}s`;
-            snowflake.style.opacity = Math.random(); // 
+            snowflake.style.opacity = Math.random();
             snowflake.style.fontSize = `${Math.random() * 30 + 10}px`;
             document.body.appendChild(snowflake);
 
@@ -357,18 +371,14 @@
         }
 
         setInterval(createSnowflake, 300);
-    </script>
 
-    <script>
         document.querySelector('#overlay').addEventListener('click', function() {
             this.classList.add('hidden');
             document.querySelector('#content').style.display = 'block';
             document.querySelector('#background-music').play();
         });
 
-        const phrases = [
-            "",
-        ];
+        const phrases = [""];
         const typingTextElement = document.getElementById('typing-text');
         let currentPhraseIndex = 0;
         let currentCharIndex = 0;
