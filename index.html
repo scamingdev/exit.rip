@@ -1,1 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scamingdev</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            cursor: url('assets/Cursor.cur'), none;
+            user-select: none;
+        }
 
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            background-color: #000;
+        }
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -3;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 3rem;
+            text-align: center;
+            z-index: 2;
+            transition: opacity 0.5s ease;
+            backdrop-filter: blur(10px); 
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            display: none;
+            color: white;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        .profile-container {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px; 
+            max-width: 350px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            margin-top: 20px;
+            z-index: 4;
+            min-height: 400px;
+            transition: min-height 0.3s ease;
+            transform: perspective(1000px) rotateX(var(--xv)) rotateY(var(--yv));
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        :root {
+            --xv: 0deg;
+            --yv: 0deg;
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .username {
+            font-size: 2.5rem;
+            margin-top: 20px;
+            text-transform: capitalize;
+            font-weight: 600;
+            position: relative;
+            display: block;
+        }
+
+        .uid {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .username:hover .uid {
+            opacity: 1;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .badges-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .badge-name {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .badge:hover .badge-name {
+            opacity: 1;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .badge:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-description {
+            margin-top: 10px;
+            font-size: 1.2rem;
+        }
+
+        #typing-text::after {
+            content: '|';
+            animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .line {
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+            margin: 20px auto;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .social-icons .icon {
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icons .icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icons .icon:hover img {
+            transform: scale(1.1);
+        }
+
+        .social-icons .icon:hover {
+            transform: translateY(-5px);
+        }
+
+        .social-icons .icon .social-name {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .social-icons .icon:hover .social-name {
+            opacity: 1;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10%;
+            color: #fff;
+            font-size: 1rem;
+            animation: fall linear infinite;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" onkeydown="return disableDevTools(event);">
+    <img src="assets/Background.png" alt="Background" class="background-image">
+
+    <audio id="background-music" loop>
+        <source src="assets/Song.mp3" type="audio/mp3">
+    </audio>
+
+    <div class="overlay" id="overlay">
+        <span>[Hey! Click To Enter]</span>
+    </div>
+
+    <div class="content" id="content">
+        <div class="profile-container" id="profile-container">
+            <div class="avatar-container">
+                <img src="assets/Avatar.png" alt="Avatar" class="avatar">
+            </div>
+
+            <div class="username">
+                scamingdev
+                <div class="uid">UID: 0</div>
+            </div>
+
+            <div class="badges-container">
+                <div class="badge" title="Owner">
+                    <img src="assets/Crown.png" alt="">
+                    <div class="badge-name">Owner</div>
+                </div>
+            </div>
+
+            <p class="profile-description">
+                <span id="typing-text"></span>
+            </p>
+
+            <div class="line"></div>
+
+            <div class="social-icons">
+                <div class="icon">
+                    <img src="assets/Angle_Wing_Right.png" alt="">
+                </div>
+                <div class="icon" onclick="window.open('https://steamcommunity.com/id/scamingdev/');">
+                    <img src="assets/Steam.gif" alt="">
+                    <div class="social-name">Steam</div>
+                </div>
+                <div class="icon">
+                    <img src="assets/Angle_Wing_Left.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        function disableDevTools(event) {
+            if (
+                event.keyCode === 123 ||
+                (event.ctrlKey && event.shiftKey && event.keyCode === 73) ||
+                (event.ctrlKey && event.shiftKey && event.keyCode === 74) ||
+                (event.ctrlKey && event.keyCode === 85)
+            ) {
+                event.preventDefault();
+                return false;
+            }
+        }
+
+        document.addEventListener('keydown', disableDevTools);
+
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.innerHTML = '❄';
+            snowflake.style.left = `${Math.random() * 100}vw`;
+            snowflake.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            snowflake.style.opacity = Math.random();
+            snowflake.style.fontSize = `${Math.random() * 30 + 10}px`;
+            document.body.appendChild(snowflake);
+
+            setTimeout(() => {
+                snowflake.remove();
+            }, 10000);
+        }
+
+        setInterval(createSnowflake, 300);
+
+        document.querySelector('#overlay').addEventListener('click', function() {
+            this.classList.add('hidden');
+            document.querySelector('#content').style.display = 'block';
+            document.querySelector('#background-music').play();
+        });
+
+        const phrases = ["scamingdev"];
+        const typingTextElement = document.getElementById('typing-text');
+        let currentPhraseIndex = 0;
+        let currentCharIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const currentPhrase = phrases[currentPhraseIndex];
+            
+            const typingSpeed = 120;
+            const deletingSpeed = 60;
+            const pauseTime = 2000;
+            
+            if (!isDeleting && currentCharIndex <= currentPhrase.length) {
+                typingTextElement.textContent = currentPhrase.slice(0, currentCharIndex);
+                currentCharIndex++;
+                setTimeout(type, typingSpeed);
+            } else if (isDeleting && currentCharIndex > 0) {
+                typingTextElement.textContent = currentPhrase.slice(0, currentCharIndex - 1);
+                currentCharIndex--;
+                setTimeout(type, deletingSpeed);
+            } else if (!isDeleting && currentCharIndex > currentPhrase.length) {
+                setTimeout(() => {
+                    isDeleting = true;
+                    type();
+                }, pauseTime);
+            } else if (isDeleting && currentCharIndex === 0) {
+                isDeleting = false;
+                currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+                setTimeout(type, 500);
+            }
+        }
+
+        setTimeout(type, 500);
+
+        const profileContainer = document.getElementById('profile-container');
+        let rotateY = 0;
+        let rotateX = 0;
+
+        profileContainer.addEventListener('mousemove', function (e) {
+            const rect = profileContainer.getBoundingClientRect();
+            const sensitivity = 42;
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            rotateX = ((y / rect.height) - 0.5) * sensitivity;
+            rotateY = ((x / rect.width) - 0.5) * -sensitivity;
+
+            profileContainer.style.setProperty('--xv', `${rotateX}deg`);
+            profileContainer.style.setProperty('--yv', `${rotateY}deg`);
+        });
+
+        profileContainer.addEventListener('mouseleave', function () {
+            setTimeout(() => {
+                profileContainer.style.setProperty('--xv', `0deg`);
+                profileContainer.style.setProperty('--yv', `0deg`);
+            }, 150);
+        });
+    </script>
+</body>
+</html>
