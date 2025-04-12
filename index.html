@@ -10,7 +10,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
-            cursor: url('Cursor.cur'), auto; /* Custom cursor applied globally */
+            cursor: url('Cursor.cur'), auto;
             user-select: none;
         }
 
@@ -288,7 +288,7 @@
             top: 20px;
             left: 20px;
             z-index: 7;
-            display: flex; /* Visible by default */
+            display: flex;
             flex-direction: row;
             align-items: center;
             gap: 0;
@@ -347,7 +347,7 @@
             height: 18px;
             background: white;
             border-radius: 50%;
-            cursor: url('Cursor.cur'), auto; /* Ensure custom cursor on slider thumb */
+            cursor: url('Cursor.cur'), auto;
             transition: transform 0.3s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
@@ -365,7 +365,7 @@
             height: 60px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 50%;
-            display: none; /* Still hidden until overlay click */
+            display: none;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
@@ -392,7 +392,7 @@
 
     <div class="volume-controller" id="volume-controller">
         <div class="volume-button" id="volume-button">
-            <img id="volume-icon" src="volume_on.png" alt="Volume">
+            <img id="volume-icon" src="Volume_on.png" alt="Volume">
         </div>
         <input type="range" min="0" max="100" value="50" class="volume-slider" id="volume-slider">
     </div>
@@ -493,7 +493,7 @@
                 overlay.addEventListener('click', function() {
                     this.classList.add('hidden');
                     content.style.display = 'block';
-                    downloadButton.style.display = 'flex'; // Show download button only
+                    downloadButton.style.display = 'flex';
                     video.muted = false;
                     video.play().catch(error => console.log('Video play failed:', error));
                 });
@@ -519,7 +519,7 @@
                     if (volume > 0) {
                         isMuted = false;
                         video.muted = false;
-                        volumeIcon.src = 'volume_on.png';
+                        volumeIcon.src = 'Volume_on.png';
                     } else {
                         isMuted = true;
                         volumeIcon.src = 'Volume_off.png';
