@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The website is currently unavailable due to owner-related issues.">
+    <title>Access Denied</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #000000, #222222, #000000);
+            background-size: 200% 200%;
+            animation: gradientShift 14s ease infinite;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow: hidden;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .card {
+            background: #ffffff;
+            padding: 56px 80px;
+            border-radius: 16px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 720px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .message {
+            color: #000000;
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+        .sub-message {
+            color: #333333;
+            font-size: 1.4rem;
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+        .card:focus-within {
+            outline: 3px solid #000000;
+            outline-offset: 4px;
+        }
+        @media (max-width: 600px) {
+            .card {
+                padding: 32px 24px;
+                margin: 16px;
+            }
+            .message {
+                font-size: 2.2rem;
+            }
+            .sub-message {
+                font-size: 1.1rem;
+            }
+        }
+        @media (prefers-contrast: high) {
+            .card {
+                border: 2px solid #000000;
+            }
+            .sub-message {
+                color: #000000;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .card {
+                transition: none;
+            }
+            body {
+                animation: none;
+                background: #000000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card" id="card" tabindex="0">
+        <h1 class="message">Access Denied</h1>
+        <p class="sub-message">We're sorry, but the website is currently unavailable due to owner-related issues. Please try again later.</p>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const card = document.getElementById('card');
+            setTimeout(() => {
+                card.classList.add('show');
+            }, 100);
+        });
+    </script>
+</body>
+</html>
